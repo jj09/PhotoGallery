@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoGallery", "PhotoGallery\PhotoGallery.csproj", "{A91A20BA-0F3A-4905-9386-74F36506AD16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhone = Release|iPhone
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A91A20BA-0F3A-4905-9386-74F36506AD16}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{A91A20BA-0F3A-4905-9386-74F36506AD16}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{A91A20BA-0F3A-4905-9386-74F36506AD16}.Release|iPhone.ActiveCfg = Release|iPhone
+		{A91A20BA-0F3A-4905-9386-74F36506AD16}.Release|iPhone.Build.0 = Release|iPhone
+		{A91A20BA-0F3A-4905-9386-74F36506AD16}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{A91A20BA-0F3A-4905-9386-74F36506AD16}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{A91A20BA-0F3A-4905-9386-74F36506AD16}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{A91A20BA-0F3A-4905-9386-74F36506AD16}.Debug|iPhone.Build.0 = Debug|iPhone
+	EndGlobalSection
+EndGlobal
