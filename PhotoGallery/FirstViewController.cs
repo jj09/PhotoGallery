@@ -16,6 +16,7 @@ namespace PhotoGallery
 
         private List<Tuple<string, string>> menuItems = new List<Tuple<string, string>>();
 
+
         public FirstViewController(IntPtr handle) : base(handle)
         {
         }
@@ -28,7 +29,7 @@ namespace PhotoGallery
                 new Tuple<string, string> ("Multiple photo grid", "showing grid first, nav arrows enabled"),
             });
 
-            Title = "MWPhotoBrowser";
+            Title = "Photo Gallery";
 
             browserDelegate = new BrowserDelegate(TableView);
 
@@ -73,7 +74,7 @@ namespace PhotoGallery
             browser.StartOnGrid = false;
             browser.AutoPlayOnAppear = false;
 
-            
+
             browserDelegate.ShowMultiplePhotoGrid(browser);
 
             // Settings
@@ -91,7 +92,7 @@ namespace PhotoGallery
         {
             private UITableView tableView;
 
-            private bool[] _selections;
+            private readonly List<PHAssetCollection> albums = new List<PHAssetCollection>();
 
             private List<IPhoto> photos = new List<IPhoto>();
             private List<IPhoto> thumbs = new List<IPhoto>();
@@ -99,6 +100,23 @@ namespace PhotoGallery
             public BrowserDelegate(UITableView tableView)
             {
                 this.tableView = tableView;
+
+
+                PHPhotoLibrary.RequestAuthorization(status =>
+                {
+                    if (status != PHAuthorizationStatus.Authorized)
+                        return;
+
+                    // Fetch all albums
+                    var allAlbums = PHAssetCollection.FetchAssetCollections(PHAssetCollectionType.Album, PHAssetCollectionSubtype.Any, null)
+                                                     .Cast<PHAssetCollection>();
+                    albums.AddRange(allAlbums);
+
+                    // Fetch all smart albums
+                    var smartAlbums = PHAssetCollection.FetchAssetCollections(PHAssetCollectionType.SmartAlbum, PHAssetCollectionSubtype.Any, null)
+                                                       .Cast<PHAssetCollection>();
+                    albums.AddRange(smartAlbums);
+                });
             }
 
             public override nuint GetPhotoCount(PhotoBrowser photoBrowser)
@@ -116,14 +134,8 @@ namespace PhotoGallery
                 return thumbs[(int)index];
             }
 
-            public override bool IsPhotoSelected(PhotoBrowser photoBrowser, nuint index)
-            {
-                return _selections[index];
-            }
-
             public override void OnSelectedChanged(PhotoBrowser photoBrowser, nuint index, bool selected)
             {
-                _selections[index] = selected;
                 Console.WriteLine("Photo at index {0} selected ? {1}.", index, selected);
             }
 
@@ -137,39 +149,62 @@ namespace PhotoGallery
                 photos = new List<IPhoto>();
                 thumbs = new List<IPhoto>();
 
-                PhotoBrowserPhoto photo;
+
+                var photosFromUserGallery = new List<NSObject>();
+
+                foreach (var album in albums)
+                {
+                    var photosFromAlbum = PHAsset.FetchAssets(album, new PHFetchOptions()).ToList();
+                    photosFromUserGallery.AddRange(photosFromAlbum);
+                }
+
+                foreach (var pto in photosFromUserGallery)
+                {
+                    var asset = (PHAsset)pto;
+
+                    var options = new PHImageRequestOptions
+                    {
+                        Synchronous = true
+                    };
+
+                    var photo = PhotoBrowserPhoto.FromAsset(asset, new CGSize(1000, 1000));
+                    var thumb = PhotoBrowserPhoto.FromAsset(asset, new CGSize(400, 400));
+                    photo.Caption = "fetch from COGS";
+                    photos.Add(photo);
+                    thumbs.Add(thumb);
+                }
 
                 // Photos
 
-                photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo5", "jpg"));
-                photo.Caption = "White Tower";
-                photos.Add(photo);
+                //photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo5", "jpg"));
+                //photo.Caption = "White Tower";
+                //photos.Add(photo);
 
-                photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo2", "jpg"));
-                photo.Caption = "The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
-                photos.Add(photo);
+                //photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo2", "jpg"));
+                //photo.Caption = "The London Eye is a giant Ferris wheel situated on the banks of the River Thames, in London, England.";
+                //photos.Add(photo);
 
-                photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo3", "jpg"));
-                photo.Caption = "York Floods";
-                photos.Add(photo);
+                //photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo3", "jpg"));
+                //photo.Caption = "York Floods";
+                //photos.Add(photo);
 
-                photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo4", "jpg"));
-                photo.Caption = "Campervan";
-                photos.Add(photo);
+                //photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo4", "jpg"));
+                //photo.Caption = "Campervan";
+                //photos.Add(photo);
 
-                // Thumbs
+                //// Thumbs
 
-                photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo5t", "jpg"));
-                thumbs.Add(photo);
+                //photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo5t", "jpg"));
+                //thumbs.Add(photo);
 
-                photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo2t", "jpg"));
-                thumbs.Add(photo);
+                //photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo2t", "jpg"));
+                //thumbs.Add(photo);
 
-                photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo3t", "jpg"));
-                thumbs.Add(photo);
+                //photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo3t", "jpg"));
+                //thumbs.Add(photo);
 
-                photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo4t", "jpg"));
-                thumbs.Add(photo);
+                //photo = PhotoBrowserPhoto.FromFilePath(NSBundle.MainBundle.PathForResource("photo4t", "jpg"));
+                //thumbs.Add(photo);
 
                 browser.StartOnGrid = true;
                 browser.DisplayNavArrows = true;

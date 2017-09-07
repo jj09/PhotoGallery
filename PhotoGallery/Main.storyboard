@@ -102,7 +102,7 @@
                     <connections>
                         <segue destination="1334" kind="relationship" relationship="rootViewController" id="1344"/>
                     </connections>
-                    <tabBarItem key="tabBarItem" title="Item" id="1398"/>
+                    <tabBarItem key="tabBarItem" title="Gallery" id="1398"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1346" userLabel="First Responder" sceneMemberID="firstResponder"/>
